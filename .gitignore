@@ -1,0 +1,35 @@
+# Ignore Composer dependencies
+/vendor/
+
+# Ignore Node.js dependencies (if used in the project)
+/node_modules/
+
+# Ignore .env file (contains sensitive information)
+.env
+
+# Ignore log files
+*.log
+*.log.*
+
+# Ignore cache files
+/cache/
+
+# Ignore session files
+/sessions/
+
+# Ignore compiled PHP files
+*.phpc
+
+# Ignore IDE-specific files
+.idea/
+.vscode/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore any other build files or artifacts
+/build/
+/dist/
+/public/assets/
+/db-data/
