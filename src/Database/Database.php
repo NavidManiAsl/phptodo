@@ -17,7 +17,7 @@ class Database {
         } catch(PDOException $e){
             echo "an error occurred: ". $e->getMessage();
         }
-        return $pdo
+        return $pdo;
 
     }
     }

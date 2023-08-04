@@ -1,3 +1,10 @@
 <?php
+require __DIR__.'/../src/bootstrap.php';
+require __DIR__. '/../src/Routes/routes.php';
 
-phpinfo();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$app->run();
+
