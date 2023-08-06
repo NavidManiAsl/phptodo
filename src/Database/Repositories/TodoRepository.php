@@ -1,5 +1,5 @@
 <?php
-
+// need to change according to TODO class
 use PDO, PDOException;
 
 require __DIR__ . '/../Database.php';
@@ -9,7 +9,13 @@ class TodoRepository
   public $db;
   public function __construct()
   {
-    $this->db = Database::connect();
+
+    $this->db = Database::connect(
+      $_ENV['DB_PORT'],
+      $_ENV['DB_NAME'],
+      $_ENV['DB_USER'],
+      $_ENV['DB_PASS']
+    );
   }
 
   public function getAllTasks()
@@ -111,6 +117,7 @@ class TodoRepository
     $query = "UPDATE tasks set done=:status";
     $stmt = $this->db->prepare($query);
     try {
+      $stmt->bindParam(':status', $status);
       $stmt->execute();
       return ["message" => "task {$taskId} Staus has been updated"];
     } catch (PDOException $e) {
