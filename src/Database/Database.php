@@ -10,7 +10,7 @@ class Database {
         public $userName,
         public $password ){}
 
-    public function connect (){
+    static function connect (){
         try{
             $dsn = "mysql:host=localhost;port={$this->port};dbname={$this->dbName}";
             $pdo = new PDO($dsn,$this->userName, $this->password);
