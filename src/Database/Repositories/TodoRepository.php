@@ -44,7 +44,7 @@ class TodoRepository
     $query = "SELECT * FROM tasks WHERE id=:id";
     $pdo = $this->db->getConnection();
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':id', $taskId);
+    $stmt->bindParam(':id', $taskId, PDO::PARAM_INT);
     try {
       $stmt->execute();
       $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -64,7 +64,7 @@ class TodoRepository
 
   public function addTask($title, $task, $due)
   {
-    $query = "INSERT INTO tasks(title, description, due_date) Values(:title, :task, :due)";
+    $query = "INSERT INTO tasks(title, description, due_date, done) Values(:title, :task, :due, false)";
     $pdo = $this->db->getConnection();
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(":title", $title);
@@ -109,13 +109,14 @@ class TodoRepository
     }
 
     if ($newDescription) {
-      $query .= "description =:description";
+      $query .= " ,description =:description";
       $params[':description'] = $newDescription;
     }
     if (sizeof($params) === 0) {
       return ["message" => "Nothing has been changed"];
     }
     try {
+      $query .= " WHERE id = {$taskId}";
       $stmt = $pdo->prepare($query);
       foreach ($params as $param => $value) {
         $stmt->bindParam($param, $value);
@@ -133,12 +134,12 @@ class TodoRepository
     if (is_null($task)) {
       return ["message" => "task {$taskId} Not found"];
     }
-    $status = !$task['done'];
+    $status = !$task->getDone();
     $query = "UPDATE tasks set done=:status";
     $pdo = $this->db->getConnection();
     $stmt = $pdo->prepare($query);
     try {
-      $stmt->bindParam(':status', $status);
+      $stmt->bindParam(':status', $status, PDO::PARAM_BOOL);
       $stmt->execute();
       return ["message" => "task {$taskId} Staus has been updated"];
     } catch (PDOException $e) {

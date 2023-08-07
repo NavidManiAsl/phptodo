@@ -23,7 +23,7 @@ $app->group('/tasks', function (RouteCollectorProxy $group) {
     $group->get('/{id}', [$todoController, 'getTask']);
     $group->post('', [$todoController, 'addTask']);
     $group->delete('/{id}', [$todoController, 'deleteTask']);
-    $group->put('/{id}', [$todoController, 'editTask']);
+    $group->put('/{id}', [$todoController, 'changeTask']);
     $group->put('/{id}/toggle', [$todoController, 'taskStatusToggle']);
 });
 
