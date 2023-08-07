@@ -62,7 +62,7 @@ class TodoRepository
     }
   }
 
-  public function addtask($title, $task, $due)
+  public function addTask($title, $task, $due)
   {
     $query = "INSERT INTO tasks(title, description, due_date) Values(:title, :task, :due)";
     $pdo = $this->db->getConnection();
@@ -93,7 +93,7 @@ class TodoRepository
     }
   }
 
-  public function editTask($taskId, $newTitle = null, $newDescription = null)
+  public function editTask($taskId, $newTitle, $newDescription)
   {
     $task = $this->getTaskById($taskId);
     if (is_null($task)) {
