@@ -13,7 +13,7 @@ class Database {
     private function connect()
     {
         try {
-            $dsn = "mysql:host=localhost;port={$this->port};dbname={$this->dbName}";
+            $dsn = "pgsql:host=localhost;port={$this->port};dbname={$this->dbName}";
             $pdo = new PDO($dsn, $this->userName, $this->password);
             return $pdo;
         } catch (PDOException $e) {
