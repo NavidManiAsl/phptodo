@@ -1,31 +1,39 @@
 <?php
-// need to change according to TODO class
-use PDO, PDOException;
 
+use PDO, PDOException;
+require __DIR__ . '/../../Models/Todo.php';
 require __DIR__ . '/../Database.php';
 
 class TodoRepository
 {
-  public $db;
-  public function __construct()
+  private $db;
+  public function __construct(Database $db)
   {
 
-    $this->db = Database::connect(
-      $_ENV['DB_PORT'],
-      $_ENV['DB_NAME'],
-      $_ENV['DB_USER'],
-      $_ENV['DB_PASS']
-    );
+    $this->db = $db;
   }
 
   public function getAllTasks()
   {
-    $stmt = "SELECT * FROM tasks";
+    $query = "SELECT * FROM tasks";
     try {
-      $query = $this->db->prepare($stmt);
-      $query->execute();
-      $data = $query->fetchAll(PDO::FETCH_ASSOC);
-      return $data;
+      $pdo = $this->db->getConnection();
+      $stmt = $pdo->prepare($query);
+      $stmt->execute();
+      $dataRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $todos = [];
+      if(!empty($dataRows)){
+      foreach($dataRows as $row ) {
+        $todo = new Todo(
+          $row['title'],
+          $row['description'],
+          $row['due_date'],
+          $row['done']
+        );
+        array_push($todos, $todo);
+        }
+      }
+      return $todos;
     } catch (PDOException $e) {
       return ["message" => $e->getMessage()];
     }
@@ -34,12 +42,21 @@ class TodoRepository
   public function getTaskById($taskId)
   {
     $query = "SELECT * FROM tasks WHERE id=:id";
-    $stmt = $this->db->prepare($query);
+    $pdo = $this->db->getConnection();
+    $stmt = $pdo->prepare($query);
     $stmt->bindParam(':id', $taskId);
     try {
       $stmt->execute();
       $data = $stmt->fetch(PDO::FETCH_ASSOC);
-      return $data;
+     if(!empty($data)){
+      $todo = new Todo(
+      $data['title'],
+      $data['description'],
+      $data['due_date'],
+      $data['done']
+     );
+     return $todo;
+    }
     } catch (PDOException $e) {
       return ["message" => $e->getMessage()];
     }
@@ -48,7 +65,8 @@ class TodoRepository
   public function addtask($title, $task, $due)
   {
     $query = "INSERT INTO tasks(title, description, due_date) Values(:title, :task, :due)";
-    $stmt = $this->db->prepare($query);
+    $pdo = $this->db->getConnection();
+    $stmt = $pdo->prepare($query);
     $stmt->bindParam(":title", $title);
     $stmt->bindParam(':task', $task);
     $stmt->bindParam(':due', $due);
@@ -63,7 +81,8 @@ class TodoRepository
   public function removeTask($taskId)
   {
     $query = "DELETE FROM tasks WHERE id=:id";
-    $stmt = $this->db->prepare($query);
+    $pdo = $this->db->getConnection();
+    $stmt = $pdo->prepare($query);
     $stmt->bindParam(':id', $taskId);
 
     try {
@@ -82,6 +101,7 @@ class TodoRepository
     }
     $query = "UPDATE tasks SET ";
     $params = [];
+    $pdo = $this->db->getConnection();
 
     if ($newTitle) {
       $query .= "title =:title";
@@ -96,7 +116,7 @@ class TodoRepository
       return ["message" => "Nothing has been changed"];
     }
     try {
-      $stmt = $this->db->prepare($query);
+      $stmt = $pdo->prepare($query);
       foreach ($params as $param => $value) {
         $stmt->bindParam($param, $value);
       }
@@ -115,7 +135,8 @@ class TodoRepository
     }
     $status = !$task['done'];
     $query = "UPDATE tasks set done=:status";
-    $stmt = $this->db->prepare($query);
+    $pdo = $this->db->getConnection();
+    $stmt = $pdo->prepare($query);
     try {
       $stmt->bindParam(':status', $status);
       $stmt->execute();

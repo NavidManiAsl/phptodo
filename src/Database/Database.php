@@ -8,16 +8,21 @@ class Database {
         public $port, 
         public $dbName, 
         public $userName,
-        public $password ){}
+        public $password ) {}
 
-    static function connect ($port, $dbName, $userName, $password){
-        try{
-            $dsn = "mysql:host=localhost;port={$port};dbname={$dbName}";
-            $pdo = new PDO($dsn, $userName, $password);
-        } catch(PDOException $e){
-            echo "an error occurred: ". $e->getMessage();
+    private function connect()
+    {
+        try {
+            $dsn = "mysql:host=localhost;port={$this->port};dbname={$this->dbName}";
+            $pdo = new PDO($dsn, $this->userName, $this->password);
+            return $pdo;
+        } catch (PDOException $e) {
+            echo "An error occurred: " . $e->getMessage();
+            return null;
         }
-        return $pdo;
+    }
 
+    public function getConnection(){
+        return $this->connect();
     }
-    }
+}
