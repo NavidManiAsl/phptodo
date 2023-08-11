@@ -3,12 +3,17 @@ class Todo
 {
 
     public function __construct(
+        private $id,
         private $title,
         private $description,
         private $due,
         private $done
     ) {
     }
+    public function getId () {
+        return $this->id;
+    }
+    
     public function getTitle()
     {
         return $this->title;

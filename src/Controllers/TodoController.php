@@ -18,10 +18,11 @@ Class TodoController {
         $todos=[];
         foreach($datarows as $todo) {
             $todo =[
+                "id" => $todo->getId(),
                 "title" => $todo->getTitle(),
                 "description" => $todo->getDescription(),
                 "due_date" => $todo->getDue(),
-                "status" => $todo->getDone()
+                "status" => $todo->getDone(),
             ];
             array_push($todos, $todo);
         }
@@ -33,6 +34,7 @@ Class TodoController {
        $taskId = $params['id'];
         $data = $this->todoRepository->getTaskById($taskId);
         $todo = [
+            "id" => $data->getId(),
             "title" => $data->getTitle(),
             "description" => $data->getDescription(),
             "due_date" => $data->getDue(),

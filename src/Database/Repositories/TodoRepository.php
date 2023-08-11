@@ -1,6 +1,7 @@
 <?php
 
 use PDO, PDOException;
+
 require __DIR__ . '/../../Models/Todo.php';
 require __DIR__ . '/../Database.php';
 
@@ -22,15 +23,16 @@ class TodoRepository
       $stmt->execute();
       $dataRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
       $todos = [];
-      if(!empty($dataRows)){
-      foreach($dataRows as $row ) {
-        $todo = new Todo(
-          $row['title'],
-          $row['description'],
-          $row['due_date'],
-          $row['done']
-        );
-        array_push($todos, $todo);
+      if (!empty($dataRows)) {
+        foreach ($dataRows as $row) {
+          $todo = new Todo(
+            $row['id'],
+            $row['title'],
+            $row['description'],
+            $row['due_date'],
+            $row['done'],
+          );
+          array_push($todos, $todo);
         }
       }
       return $todos;
@@ -48,15 +50,16 @@ class TodoRepository
     try {
       $stmt->execute();
       $data = $stmt->fetch(PDO::FETCH_ASSOC);
-     if(!empty($data)){
-      $todo = new Todo(
-      $data['title'],
-      $data['description'],
-      $data['due_date'],
-      $data['done']
-     );
-     return $todo;
-    }
+      if (!empty($data)) {
+        $todo = new Todo(
+          $data['id'],
+          $data['title'],
+          $data['description'],
+          $data['due_date'],
+          $data['done']
+        );
+        return $todo;
+      }
     } catch (PDOException $e) {
       return ["message" => $e->getMessage()];
     }
