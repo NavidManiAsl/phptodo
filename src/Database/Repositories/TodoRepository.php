@@ -67,7 +67,7 @@ class TodoRepository
 
   public function addTask($title, $task, $due)
   {
-    $query = "INSERT INTO tasks(title, description, due_date) Values(:title, :task, :due)";
+    $query = "INSERT INTO tasks(title, description, due_date, done) Values(:title, :task, :due, false)";
     $pdo = $this->db->getConnection();
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(":title", $title);
